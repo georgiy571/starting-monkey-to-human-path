@@ -1,6 +1,8 @@
 package PO73.Polyanskiy.wdad.learn.xml;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -10,12 +12,31 @@ import java.io.IOException;
 public class XmlTask {
     public static final String FILE_PATH = "";
 
+    /**
+     * возвращает текст заметки по её владельцу и названию заметки
+     * @param owner владелец
+     * @param title название заметки
+     * @return текст заметки
+     */
     public String getNoteText (User owner, String title) {
         try {
-            Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(FILE_PATH);
-        } catch (SAXException | IOException | ParserConfigurationException e) {
+            Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse("notes.xml");
+            //получаем сам элемент notes
+            Node notesNode = document.getDocumentElement().getElementsByTagName("notes").item(0);
+            //получаем дочерние элементы notes
+            NodeList notes = notesNode.getChildNodes();
+            //проходимся по дочерним элементам элемента notes
+            for (int i = 0; i < notes.getLength(); i++) {
+                //если дочерний элемент является элементом а не мусором, то мы получаем сам элемент note
+                if (notes.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                    Node noteNode = notes.item(i);
+
+                }
+            }
+        } catch (SAXException | ParserConfigurationException | IOException e) {
             e.printStackTrace();
         }
+
         return null;
     }
 
