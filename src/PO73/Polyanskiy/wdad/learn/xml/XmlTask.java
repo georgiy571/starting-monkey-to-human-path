@@ -8,6 +8,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class XmlTask {
     public static final String FILE_PATH = "";
@@ -30,7 +31,20 @@ public class XmlTask {
                 //если дочерний элемент является элементом а не мусором, то мы получаем сам элемент note
                 if (notes.item(i).getNodeType() == Node.ELEMENT_NODE) {
                     Node noteNode = notes.item(i);
-
+                    NodeList noteChildNodes = noteNode.getChildNodes();
+                    for (int j = 0; j < noteChildNodes.getLength(); j++) {
+                        Node noteChildNode = noteChildNodes.item(j);
+                        String text = "";
+                        if (noteChildNode.getNodeType() == Node.ELEMENT_NODE && noteChildNode.getNodeName().equals("text")) {
+                            text = noteChildNode.getTextContent();
+                        } else if (noteChildNode.getNodeType() == Node.ELEMENT_NODE && noteChildNode.getNodeName().equals("owner")) {
+                            String name = noteChildNode.getAttributes().getNamedItem("name").getNodeValue();
+                            String mail = noteChildNode.getAttributes().getNamedItem("mail").getNodeValue();
+                            if (name.equals(owner.getName()) && mail.equals(owner.getMail())) {
+                                return text;
+                            }
+                        }
+                    }
                 }
             }
         } catch (SAXException | ParserConfigurationException | IOException e) {
@@ -41,7 +55,7 @@ public class XmlTask {
     }
 
     public void updateNote (User owner, String title, String newText){
-
+        
     }
 
     public void setPrivileges (String noteTitle, User user, int newRights){
