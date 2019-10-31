@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class XmlTask {
-    private String filePath = "notes.xml";
+    private String filePath = "src/PO73/Polyanskiy/wdad/learn/xml/notes.xml";
     private Document document;
 
     public XmlTask() {
@@ -33,8 +33,12 @@ public class XmlTask {
     public String getNoteText (User owner, String title) {
         List<Node> noteNodes = getNoteNodes(owner);
         if (noteNodes.size() == 0) return "";
+        Loop:
         for (Node noteNode : noteNodes) {
             for (Node noteNodeChild : getChildNodes(noteNode)) {
+                if (noteNodeChild.getNodeName().equals("title") && !noteNodeChild.getTextContent().equals(title)) {
+                    continue Loop;
+                }
                 if (noteNodeChild.getNodeName().equals("text"))
                     return noteNodeChild.getTextContent();
             }
@@ -83,7 +87,7 @@ public class XmlTask {
     private List<Node> getNoteNodes(User owner) {
         ArrayList<Node> nodes = new ArrayList<>();
         //получаем сам элемент notes
-        Node notesNode = document.getDocumentElement().getElementsByTagName("notes").item(0);
+        Node notesNode = document.getElementsByTagName("notes").item(0);
         for (Node note : getChildNodes(notesNode)) {
             for (Node noteChild : getChildNodes(note)) {
                 if (noteChild.getNodeName().equals("owner")) {
