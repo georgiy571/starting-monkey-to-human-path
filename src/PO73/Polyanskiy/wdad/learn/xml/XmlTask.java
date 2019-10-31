@@ -8,16 +8,20 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class XmlTask {
-    public static final String FILE_PATH = "";
+    private String filePath = "notes.xml";
     private Document document;
 
     public XmlTask() {
-        loadXML("notes.xml");
+        loadXML();
     }
 
     /**
@@ -73,7 +77,7 @@ public class XmlTask {
                 }
             }
         }
-        //todo saveXML
+        saveXML();
     }
 
     private List<Node> getNoteNodes(User owner) {
@@ -93,16 +97,23 @@ public class XmlTask {
         return nodes;
     }
 
-    private void loadXML(String path) {
+    private void loadXML() {
         try {
-            document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(path);
+            document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(filePath);
         } catch (SAXException | IOException | ParserConfigurationException e) {
             e.printStackTrace();
         }
     }
 
-    private void saveXML(String path) {
-        //todo save
+    private void saveXML() {
+        try {
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            Result out = new StreamResult(new File(filePath));
+            Source in = new DOMSource(document);
+            transformer.transform(in, out);
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        }
     }
 
     private List<Node> getChildNodes(Node node) {
